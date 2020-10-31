@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: playground
+  output:
+    ansi:
+      enabled: always # Habilita OUTPUT de log colorido
+  cloud:
+    config:
+      enabled: false
+      uri: ${CONFIGSERVER_URI:http://0.0.0.0:8888}
+  zipkin:
+    base-url: ${ZIPKINSERVER_URI:http://0.0.0.0:9411}
+mybatis:
+  type-aliases-package: br.com.ithappens.model
+  type-handlers-package: br.com.ithappens.mapper.typehandler
+  mapper-locations: classpath*:**/mappers/*Mapper.xml
+logging:
+  level:
+    br.com.ithappens: INFO
+eureka:
+  client:
+    enabled: false
+    registry-fetch-interval-seconds: 30
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKASERVER_URI:http://0.0.0.0:8761/eureka/}
+  instance:
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 11
+management:
+  endpoint:
+    metrics:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+---
+
+spring:
+  profiles: deploy
+app:
+  logging:
+    host: 192.168.6.182:5000
+server:
+  servlet:
+    context-path: /${modulo}/api/playground
+management:
+  endpoint:
+    metrics:
+      enabled: true
+  metrics:
+    export:
+      statsd:
+        enabled: true
+        flavor: telegraf
+        port: ${TELEGRAF_PORT:8125}
+        host: ${TELEGRAF_HOST:10.54.0.184}
+    tags:
+      appname: ${spring.application.name}
+      instance: ${random.uuid}

@@ -1,0 +1,21 @@
+spring:
+  profiles:
+    active: myProfile
+
+---
+# Coloque aqui suas configurações de Desenvolvimento
+spring:
+  profiles: dev
+
+---
+# Coloque aqui suas configurações de Homologação
+spring:
+  profiles: homo
+
+---
+spring:
+  profiles: myProfile
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydb
+    username: usuario
+    password: 123456
