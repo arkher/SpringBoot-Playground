@@ -60,14 +60,13 @@ public class PedidoService {
     public Boolean insertPedidoSaida(List<ItemPedido> itensPedido, Pedido pedido){
         for (ItemPedido itemPedido: itensPedido){
             Estoque estoque = estoqueMapper.findOne(pedido.getFilial().getId(), itemPedido.getIdProduto());
-            if(estoque!=null){
-                if(itemPedido.getQuantidade()<estoque.getQuantidade()){
+            if(estoque!=null && itemPedido.getQuantidade()<=estoque.getQuantidade()){
                     estoque.setQuantidade(estoque.getQuantidade() - itemPedido.getQuantidade());
                     estoqueMapper.update(estoque);
-                }else{
-                    return false;
-                }
+            }else{
+                return false;
             }
+
         }
         return true;
     }
