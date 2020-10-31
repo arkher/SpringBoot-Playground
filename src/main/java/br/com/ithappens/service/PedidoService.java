@@ -62,7 +62,7 @@ public class PedidoService {
             Estoque estoque = estoqueMapper.findOne(pedido.getFilial().getId(), itemPedido.getIdProduto());
             if(estoque!=null){
                 if(itemPedido.getQuantidade()<estoque.getQuantidade()){
-                    estoque.setQuantidade(estoque.getQuantidade() + itemPedido.getQuantidade());
+                    estoque.setQuantidade(estoque.getQuantidade() - itemPedido.getQuantidade());
                     estoqueMapper.update(estoque);
                 }else{
                     return false;

@@ -19,7 +19,7 @@
         values (#{estoque.produto.id}, #{estoque.filial.id}, #{estoque.quantidade});
     </insert>
     <update id="update">
-        update tab_pedido
+        update tab_estoque
         set
             qtd=#{estoque.quantidade}
         where id_produto=#{estoque.produto.id}
