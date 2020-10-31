@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="br.com.ithappens.mapper.FilialMapper">
+    <insert id="insert" parameterType="br.com.ithappens.model.Filial">
+        INSERT INTO tab_filial
+            (descricao)
+            VALUES
+            (#{filial.descricao});
+    </insert>
+    <update id="update" parameterType="br.com.ithappens.model.Filial">
+        UPDATE tab_filial
+        SET
+            descricao=#{filial.descricao}
+        WHERE
+            id=#{filial.id};
+    </update>
+    <update id="delete" >
+        UPDATE tab_filial
+        SET
+            ativo=false
+        WHERE
+            id=#{id};
+    </update>
+    <select id="findAll" resultType="br.com.ithappens.model.Filial">
+        select id, descricao from tab_filial where tab_filial.ativo=true;
+    </select>
+    <select id="findOne" resultType="br.com.ithappens.model.Filial">
+        select id, descricao from tab_filial where tab_filial.id=#{id} and tab_filial.ativo=true;
+    </select>
+    <select id="findByDescricao" resultType="br.com.ithappens.model.Filial">
+        <bind name="pattern" value="'%' + descricao + '%'" />
+        select id, descricao from tab_filial where tab_filial.descricao ilike #{pattern} and tab_filial.ativo=true;
+    </select>
+</mapper>

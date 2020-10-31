@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="br.com.ithappens.mapper.EstoqueMapper">
+    <resultMap id="estoqueMap"  type="br.com.ithappens.model.Estoque">
+        <result column="qtd" property="quantidade"/>
+
+        <association property="filial" javaType="br.com.ithappens.model.Filial" >
+            <result column="id_filial" property="id"/>
+            <result column="f_descricao" property="descricao"/>
+        </association>
+
+        <association property="produto" javaType="br.com.ithappens.model.Produto" >
+            <result column="id_produto" property="id"/>
+            <result column="p_descricao" property="descricao"/>
+        </association>
+    </resultMap>
+    <insert id="insert">
+        insert into tab_estoque (id_produto, id_filial, qtd)
+        values (#{estoque.produto.id}, #{estoque.filial.id}, #{estoque.quantidade});
+    </insert>
+    <update id="update">
+        update tab_pedido
+        set
+            qtd=#{estoque.quantidade}
+        where id_produto=#{estoque.produto.id}
+        and id_filial=#{estoque.filial.id};
+    </update>
+    <select id="findAll" resultType="br.com.ithappens.model.Estoque">
+        select id_produto, id_filial, qtd from tab_estoque;
+    </select>
+    <select id="findBy" resultMap="estoqueMap">
+        select tab_estoque.id_produto as id_produto, tab_estoque.id_filial as id_filial,
+        tab_estoque.qtd as qtd, tab_filial.descricao as f_descricao, tab_produto.descricao as p_descricao
+        from tab_estoque
+        inner join tab_filial on tab_estoque.id_filial=tab_filial.id
+        inner join tab_produto on tab_estoque.id_produto=tab_produto.id
+        <choose>
+            <when test="idProduto!=null and idFilial!=null">
+                where tab_estoque.id_filial=#{idFilial} and tab_estoque.id_produto=#{idProduto};
+            </when>
+            <when test="idProduto!=null">
+                where tab_estoque.id_produto=#{idProduto};
+            </when>
+            <when test="idFilial!=null">
+                where tab_estoque.id_filial=#{idFilial};
+            </when>
+        </choose>
+    </select>
+    <select id="findOne" resultMap="estoqueMap">
+        select tab_estoque.id_produto as id_produto, tab_estoque.id_filial as id_filial,
+        tab_estoque.qtd as qtd, tab_filial.descricao as f_descricao, tab_produto.descricao as p_descricao
+        from tab_estoque
+        inner join tab_filial on tab_estoque.id_filial=tab_filial.id
+        inner join tab_produto on tab_estoque.id_produto=tab_produto.id
+        <choose>
+            <when test="idProduto!=null and idFilial!=null">
+                where tab_estoque.id_filial=#{idFilial} and tab_estoque.id_produto=#{idProduto};
+            </when>
+            <when test="idProduto!=null">
+                where tab_estoque.id_produto=#{idProduto};
+            </when>
+            <when test="idFilial!=null">
+                where tab_estoque.id_filial=#{idFilial};
+            </when>
+        </choose>
+    </select>
+
+</mapper>

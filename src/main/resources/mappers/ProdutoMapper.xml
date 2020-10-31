@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="br.com.ithappens.mapper.ProdutoMapper">
+    <insert id="insert" parameterType="br.com.ithappens.model.Produto">
+        INSERT INTO tab_produto
+            (descricao)
+            VALUES
+            (#{produto.descricao});
+    </insert>
+    <update id="update" parameterType="br.com.ithappens.model.Produto">
+        UPDATE tab_produto
+        SET
+            descricao=#{produto.descricao}
+        WHERE
+            id=#{produto.id};
+    </update>
+    <update id="delete" >
+        UPDATE tab_produto
+        SET
+            ativo=false
+        WHERE
+            id=#{id};
+    </update>
+    <select id="findAll" resultType="br.com.ithappens.model.Produto">
+        select id, descricao from tab_produto where tab_produto.ativo=true;
+    </select>
+    <select id="findOne" resultType="br.com.ithappens.model.Produto">
+        select id, descricao from tab_produto where tab_produto.id=#{id} and tab_produto.ativo=true;
+    </select>
+    <select id="findByDescricao" resultType="br.com.ithappens.model.Produto">
+        <bind name="pattern" value="'%' + descricao + '%'" />
+        select id, descricao from tab_produto where tab_produto.descricao ilike #{pattern} and tab_produto.ativo=true;
+    </select>
+</mapper>

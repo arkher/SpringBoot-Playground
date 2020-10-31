@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="br.com.ithappens.mapper.PedidoMapper">
+    <resultMap id="pedidoMap"  type="br.com.ithappens.model.Pedido">
+        <result column="id" property="id"/>
+        <result column="tipo_pedido" property="tipoPedido"/>
+
+        <association property="filial" javaType="br.com.ithappens.model.Filial" >
+            <result column="id_filial" property="id"/>
+            <result column="descricao" property="descricao"/>
+        </association>
+
+        <collection property="itensPedido"
+                    javaType="ArrayList"
+                    ofType="br.com.ithappens.model.ItemPedido"
+                    select="br.com.ithappens.mapper.ItemPedidoMapper.findItensPedido"
+                    column="id" />
+
+    </resultMap>
+
+    <insert id="insert" parameterType="br.com.ithappens.model.Pedido"
+            useGeneratedKeys="true" keyColumn="id" keyProperty="pedido.id">
+        insert into tab_pedido
+        (id_filial, tipo_pedido)
+        values
+        (#{pedido.filial.id}, #{pedido.tipoPedido}::tipo_pedido);
+    </insert>
+    <update id="delete">
+        update tab_pedido
+        set
+            ativo=false
+        where
+            id=#{id};
+    </update>
+    <select id="findAll" resultMap="pedidoMap">
+        select tab_pedido.id, tab_pedido.id_filial, tab_filial.descricao, tab_pedido.tipo_pedido from tab_pedido inner join tab_filial on tab_pedido.id_filial=tab_filial.id where tab_pedido.ativo=true;
+    </select>
+    <select id="findOne" resultMap="pedidoMap">
+        select tab_pedido.id, tab_pedido.id_filial, tab_filial.descricao, tab_pedido.tipo_pedido from tab_pedido
+        inner join tab_filial on tab_pedido.id_filial=tab_filial.id
+        where tab_pedido.id=#{id} and tab_pedido.ativo=true;
+    </select>
+    <select id="findBy" resultMap="pedidoMap">
+        select tab_pedido.id, tab_pedido.id_filial, tab_pedido.tipo_pedido, tab_filial.descricao from tab_pedido
+        inner join tab_filial on tab_pedido.id_filial=tab_filial.id
+        <choose>
+            <when test="tipoPedido!=null and idFilial!=null">
+                where tab_pedido.id_filial=#{idFilial} and tab_pedido.tipo_pedido=#{tipoPedido}::tipo_pedido and tab_pedido.ativo=true;
+            </when>
+            <when test="tipoPedido!=null">
+                where tab_pedido.tipo_pedido=#{tipoPedido}::tipo_pedido and tab_pedido.ativo=true;
+            </when>
+            <when test="idFilial!=null">
+                where tab_pedido.id_filial=#{idFilial} and tab_pedido.ativo=true;
+            </when>
+        </choose>
+    </select>
+</mapper>

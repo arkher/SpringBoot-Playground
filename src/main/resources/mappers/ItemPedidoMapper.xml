@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="br.com.ithappens.mapper.ItemPedidoMapper">
+    <insert id="insertItensPedido">
+        INSERT INTO public.tab_item_pedido (id_pedido,id_produto,quantidade)
+        VALUES
+        <foreach collection="itensPedido" item="item" open="(" separator="),(" close=")">
+            #{idPedido},#{item.idProduto},#{item.quantidade}
+        </foreach>
+    </insert>
+    <select id="findItensPedido" resultType="br.com.ithappens.model.ItemPedido">
+        select id_pedido, id_produto, quantidade from tab_item_pedido where id_pedido=#{idPedido};
+    </select>
+</mapper>
